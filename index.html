@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>النقل البري للسفريات والسياحه</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root{--primary:#3b82f6;--primary-dark:#2563eb;--gold:#b8860b;--bg:#f8fafc;--text:#1e293b;--text-muted:#475569;--border:#e2e8f0}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;scroll-behavior:smooth}
+        a{text-decoration:none;color:inherit}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        .logo{display:flex;align-items:center;gap:10px;font-size:1.8rem;font-weight:800;color:#0f172a}
+        .logo i{color:var(--primary);font-size:2rem}
+        .logo span{color:var(--primary)}
+        .navbar{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.04);padding:15px 0;position:sticky;top:0;z-index:100}
+        .navbar .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+        .nav-links{display:flex;gap:25px;font-weight:600;font-size:.95rem}
+        .nav-links a{color:#334155;transition:.2s}
+        .nav-links a:hover{color:var(--primary)}
+        .nav-cta{background:var(--primary);color:#fff!important;padding:8px 22px;border-radius:40px;transition:.2s}
+        .nav-cta:hover{background:var(--primary-dark);transform:scale(1.02)}
+        .mobile-toggle{display:none;font-size:1.8rem;background:none;border:none;cursor:pointer;color:#0f172a}
+        .admin-trigger{position:fixed;bottom:25px;left:25px;width:50px;height:50px;border-radius:50%;background:#1e293b;color:#94a3b8;border:none;cursor:pointer;font-size:1.3rem;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:.3s;display:flex;align-items:center;justify-content:center;opacity:.5}
+        .admin-trigger:hover{opacity:1;background:#0f172a;color:#fff;transform:scale(1.08)}
+        .hero{padding:80px 0 60px;background:linear-gradient(135deg,#eff6ff 0%,#f8fafc 100%);border-bottom:1px solid var(--border)}
+        .hero .container{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+        .hero-content h1{font-size:2.8rem;font-weight:800;line-height:1.2;margin-bottom:15px}
+        .hero-content h1 span{color:var(--primary)}
+        .hero-content p{font-size:1.15rem;color:var(--text-muted);margin-bottom:25px;max-width:500px}
+        .hero-buttons{display:flex;gap:15px;flex-wrap:wrap}
+        .btn-primary{background:var(--primary);color:#fff;padding:12px 32px;border-radius:40px;font-weight:700;transition:.2s;border:none;cursor:pointer;display:inline-block}
+        .btn-primary:hover{background:var(--primary-dark);transform:scale(1.03)}
+        .btn-outline{background:transparent;color:var(--primary);padding:12px 32px;border-radius:40px;font-weight:700;border:2px solid var(--primary);transition:.2s;display:inline-block}
+        .btn-outline:hover{background:var(--primary);color:#fff}
+        .hero-image{display:flex;justify-content:center;align-items:center}
+        .hero-image img{max-width:100%;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.08)}
+        .ads-section{padding:60px 0;background:linear-gradient(135deg,#fefce8 0%,#fff7ed 50%,#fefce8 100%);border-bottom:2px dashed #fbbf24;border-top:2px dashed #fbbf24}
+        .ads-section .section-title{color:#5d3a1a}
+        .ads-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:30px}
+        .ad-card{background:#fff;border-radius:18px;padding:28px 22px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,.06);transition:all .35s;border:2px solid transparent;position:relative;overflow:hidden}
+        .ad-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#f59e0b,#ef4444,#f59e0b);border-radius:0 0 8px 8px}
+        .ad-card:hover{transform:translateY(-8px);box-shadow:0 16px 40px rgba(0,0,0,.12);border-color:#fbbf24}
+        .ad-card .ad-icon{font-size:3rem;color:#f59e0b;margin-bottom:14px;display:inline-block;animation:pulseAd 2s infinite}
+        @keyframes pulseAd{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+        .ad-card h3{font-size:1.25rem;font-weight:800;color:#1e293b;margin-bottom:8px}
+        .ad-card p{color:#64748b;font-size:.95rem;margin-bottom:16px;line-height:1.6}
+        .ad-card .btn-ad{display:inline-block;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:10px 24px;border-radius:30px;font-weight:700;font-size:.9rem;transition:all .3s;box-shadow:0 4px 14px rgba(239,68,68,.3)}
+        .ad-card .btn-ad:hover{transform:scale(1.06);box-shadow:0 8px 22px rgba(239,68,68,.4)}
+        .no-ads-msg{text-align:center;color:#94a3b8;font-size:1.1rem;padding:40px 0;grid-column:1/-1}
+        .jobs-section{padding:70px 0;background:#f1f5f9;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+        .jobs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:30px}
+        .job-card{background:#fff;border-radius:16px;padding:24px 22px;box-shadow:0 4px 16px rgba(0,0,0,.04);transition:all .3s;border:1px solid #e2e8f0;display:flex;flex-direction:column;gap:10px}
+        .job-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08);border-color:var(--primary)}
+        .job-card .job-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+        .job-card .job-title{font-size:1.2rem;font-weight:800;color:#0f172a}
+        .job-type-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:700;white-space:nowrap}
+        .badge-full{background:#dbeafe;color:#1d4ed8}
+        .badge-part{background:#fef3c7;color:#92400e}
+        .badge-remote{background:#d1fae5;color:#065f46}
+        .badge-contract{background:#fce7f3;color:#9d174d}
+        .job-card .job-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:.88rem;color:#64748b}
+        .job-card .job-meta i{color:var(--primary);margin-left:5px}
+        .job-card .job-desc{color:#475569;font-size:.93rem;line-height:1.7;flex:1}
+        .job-card .job-req{background:#f8fafc;padding:12px 16px;border-radius:10px;font-size:.85rem;color:#334155;border-right:3px solid var(--primary)}
+        .job-card .btn-apply{align-self:flex-start;background:var(--primary);color:#fff;padding:10px 22px;border-radius:30px;font-weight:700;font-size:.9rem;transition:.3s;border:none;cursor:pointer;margin-top:6px}
+        .job-card .btn-apply:hover{background:var(--primary-dark);transform:scale(1.04)}
+        .no-jobs-msg{text-align:center;color:#94a3b8;font-size:1.1rem;padding:40px 0;grid-column:1/-1}
+        .services{padding:70px 0;background:#fff}
+        .section-title{text-align:center;font-size:2.2rem;font-weight:800;margin-bottom:10px}
+        .section-sub{text-align:center;color:#64748b;margin-bottom:40px;font-size:1.05rem}
+        .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px}
+        .service-card{background:#f8fafc;padding:30px 20px;border-radius:20px;text-align:center;transition:.3s;border:1px solid transparent}
+        .service-card:hover{border-color:var(--primary);transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,.05)}
+        .service-card i{font-size:2.8rem;color:var(--primary);margin-bottom:15px}
+        .service-card h3{font-size:1.3rem;margin-bottom:8px}
+        .service-card p{color:var(--text-muted);font-size:.95rem}
+        .umrah-section{padding:80px 0;background:linear-gradient(135deg,#fef9e7 0%,#fdf2e9 50%,#fef9e7 100%);position:relative;overflow:hidden;border-top:2px solid #f0c27a;border-bottom:2px solid #f0c27a}
+        .umrah-container{display:flex;align-items:center;justify-content:center;gap:50px;flex-wrap:wrap;position:relative;z-index:1}
+        .umrah-icon-wrapper{flex-shrink:0;width:160px;height:160px;background:radial-gradient(circle,#fff9e6 0%,#f7dc6f 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 15px 35px rgba(212,168,83,.35);animation:floatUmrah 3s ease-in-out infinite}
+        @keyframes floatUmrah{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        .umrah-icon-wrapper i{font-size:5rem;color:#b8860b;filter:drop-shadow(0 4px 6px rgba(180,130,20,.3))}
+        .umrah-content{text-align:center;max-width:600px}
+        .umrah-content h2{font-size:2.3rem;font-weight:800;color:#5d3a1a;margin-bottom:10px;line-height:1.3}
+        .umrah-content .highlight{color:#b8860b;position:relative;display:inline-block}
+        .umrah-content p{font-size:1.2rem;color:#6b4c2a;margin-bottom:12px;line-height:1.8}
+        .umrah-content .duration-badge{display:inline-block;background:#fef3c7;color:#92400e;padding:8px 20px;border-radius:30px;font-weight:700;font-size:1rem;margin-bottom:20px;border:1px solid #fbbf24;animation:pulseBadge 2s infinite}
+        @keyframes pulseBadge{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.4)}50%{box-shadow:0 0 0 15px rgba(245,158,11,0)}}
+        .umrah-content .btn-umrah{background:linear-gradient(135deg,#d4a853 0%,#b8860b 100%);color:#fff;padding:14px 40px;border-radius:50px;font-weight:800;font-size:1.15rem;border:none;cursor:pointer;transition:all .3s;display:inline-block;box-shadow:0 8px 25px rgba(184,134,11,.35);letter-spacing:.5px}
+        .btn-umrah:hover{background:linear-gradient(135deg,#c9953a 0%,#9e7209 100%);transform:scale(1.06);box-shadow:0 14px 35px rgba(184,134,11,.45)}
+        .btn-umrah i{margin-right:8px;animation:bounceArrow 1.5s infinite}
+        @keyframes bounceArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}
+        .portfolio{padding:70px 0;background:#f8fafc}
+        .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px}
+        .portfolio-item{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.04);transition:.3s}
+        .portfolio-item:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+        .portfolio-item .img-placeholder{width:100%;height:180px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:3rem;color:#94a3b8}
+        .portfolio-item .info{padding:15px 20px 20px}
+        .portfolio-item .info h4{font-size:1.1rem;margin-bottom:4px}
+        .portfolio-item .info p{color:#64748b;font-size:.9rem}
+        .testimonials{padding:70px 0;background:#fff}
+        .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+        .testimonial-card{background:#f8fafc;padding:25px;border-radius:16px;border-right:4px solid var(--primary)}
+        .testimonial-card p{font-size:.95rem;color:#334155;margin-bottom:10px}
+        .testimonial-card .author{font-weight:700;color:#0f172a}
+        .testimonial-card .role{font-size:.8rem;color:#64748b}
+        .faq{padding:70px 0;background:#f8fafc}
+        .faq-list{max-width:750px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+        .faq-item{background:#fff;border-radius:12px;padding:18px 25px;box-shadow:0 2px 8px rgba(0,0,0,.02);border:1px solid var(--border);transition:.2s;cursor:pointer}
+        .faq-item:hover{border-color:var(--primary)}
+        .faq-item .question{display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem}
+        .faq-item .question i{transition:.3s}
+        .faq-item .answer{max-height:0;overflow:hidden;transition:.3s;color:var(--text-muted);font-size:.95rem}
+        .faq-item.active .answer{max-height:200px;padding-top:10px}
+        .faq-item.active .question i{transform:rotate(180deg)}
+        .contact{padding:70px 0;background:#fff}
+        .contact-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+        .contact-info h3{font-size:1.8rem;margin-bottom:10px}
+        .contact-info p{color:var(--text-muted);margin-bottom:20px}
+        .contact-info .social-links{display:flex;gap:15px;font-size:1.6rem;margin-top:15px}
+        .contact-info .social-links a{color:var(--text-muted);transition:.2s}
+        .contact-info .social-links a:hover{color:var(--primary)}
+        .contact-form input,.contact-form textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:12px;font-family:inherit;font-size:1rem;margin-bottom:15px;background:#f8fafc;transition:.2s}
+        .contact-form input:focus,.contact-form textarea:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+        .contact-form textarea{resize:vertical;min-height:120px}
+        .contact-form .btn-primary{width:100%;text-align:center}
+        .stats-section{padding:70px 0;background:#f1f5f9;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+        .stats-grid{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin-top:20px}
+        .stats-grid div{text-align:center;min-width:120px}
+        .stats-grid .number{font-size:2.8rem;font-weight:800;color:#0f172a;line-height:1.2}
+        .stats-grid .label{color:#64748b;font-size:1rem;font-weight:600;display:block;margin-top:4px}
+        .footer{background:#0f172a;color:#cbd5e1;padding:30px 0;text-align:center;font-size:.9rem}
+        .footer a{color:#60a5fa}
+        .footer a:hover{color:#fff}
+        .admin-overlay{position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+        .admin-panel{background:#fff;width:95%;max-width:1000px;height:90vh;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 60px rgba(0,0,0,.3)}
+        .admin-header{background:#0f172a;color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;gap:12px;flex-wrap:wrap}
+        .admin-header h2{font-size:1.3rem;display:flex;align-items:center;gap:10px}
+        .admin-header h2 i{color:#3b82f6}
+        .admin-header .header-actions{display:flex;gap:8px;align-items:center}
+        .admin-close{background:rgba(255,255,255,.1);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1.1rem;transition:.2s}
+        .admin-close:hover{background:#ef4444}
+        .admin-logout-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fbbf24;padding:7px 16px;border-radius:20px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;transition:.2s;display:flex;align-items:center;gap:6px}
+        .admin-logout-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+        .admin-role-badge{font-size:.75rem;padding:4px 12px;border-radius:14px;font-weight:700}
+        .role-owner{background:#3b82f6;color:#fff}
+        .admin-body{display:flex;flex:1;overflow:hidden}
+        .admin-sidebar{width:200px;background:#f1f5f9;padding:15px 10px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;overflow-y:auto}
+        .admin-sidebar button{background:transparent;border:none;padding:12px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:600;font-size:.9rem;text-align:right;color:#475569;transition:.2s;display:flex;align-items:center;gap:8px}
+        .admin-sidebar button i{width:20px;text-align:center;color:#94a3b8}
+        .admin-sidebar button:hover{background:#e2e8f0;color:#0f172a}
+        .admin-sidebar button.active{background:#3b82f6;color:#fff}
+        .admin-sidebar button.active i{color:#fff}
+        .admin-content{flex:1;padding:20px 24px;overflow-y:auto;background:#fafbfc}
+        .admin-content h3{font-size:1.2rem;margin-bottom:16px;color:#0f172a}
+        .admin-form-group{margin-bottom:14px}
+        .admin-form-group label{display:block;font-weight:600;font-size:.85rem;margin-bottom:4px;color:#334155}
+        .admin-form-group input,.admin-form-group textarea,.admin-form-group select{width:100%;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:.9rem;background:#fff;transition:.2s}
+        .admin-form-group input:focus,.admin-form-group textarea:focus{border-color:#3b82f6;outline:none;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+        .admin-form-group textarea{resize:vertical;min-height:70px}
+        .admin-btn{padding:10px 20px;border-radius:30px;border:none;cursor:pointer;font-weight:700;font-family:inherit;font-size:.9rem;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+        .admin-btn-primary{background:#3b82f6;color:#fff}
+        .admin-btn-primary:hover{background:#2563eb}
+        .admin-btn-danger{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+        .admin-btn-danger:hover{border-color:#dc2626}
+        .admin-btn-success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+        .admin-btn-success:hover{background:#a7f3d0}
+        .admin-btn-warning{background:#fef3c7;color:#92400e;border:1px solid #fbbf24}
+        .admin-btn-warning:hover{background:#fde68a}
+        .admin-btn-sm{padding:5px 12px;font-size:.78rem;border-radius:20px}
+        .admin-list-item{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+        .admin-list-item .item-info{flex:1;min-width:150px}
+        .admin-list-item .item-info strong{display:block;color:#0f172a}
+        .admin-list-item .item-info small{color:#64748b}
+        .admin-list-item .item-actions{display:flex;gap:6px;flex-wrap:wrap}
+        .admin-badge{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+        .admin-badge.active-badge{background:#d1fae5;color:#065f46}
+        .admin-badge.inactive-badge{background:#fee2e2;color:#991b1b}
+        .admin-login-box{background:#fff;padding:40px;border-radius:20px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.3);width:420px;max-width:90%}
+        .admin-login-box i{font-size:3.5rem;color:#3b82f6;margin-bottom:15px}
+        .admin-login-box h3{margin-bottom:8px;font-size:1.4rem}
+        .admin-login-box p{color:#64748b;font-size:.9rem;margin-bottom:20px}
+        .admin-login-box input{width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:1.1rem;text-align:center;font-family:inherit;letter-spacing:4px;transition:.2s}
+        .admin-login-box input:focus{border-color:#3b82f6;outline:none;box-shadow:0 0 0 4px rgba(59,130,246,.1)}
+        .admin-login-box .login-btn{margin-top:14px;width:100%;padding:12px;border-radius:30px;background:#3b82f6;color:#fff;border:none;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;transition:.2s}
+        .admin-login-box .login-btn:hover{background:#2563eb}
+        .admin-login-box .login-error{color:#ef4444;font-size:.85rem;margin-top:8px;display:none}
+        .sync-status{position:fixed;bottom:25px;right:25px;background:#0f172a;color:#fff;padding:8px 16px;border-radius:20px;font-size:.8rem;z-index:1001;opacity:0;transition:.3s;pointer-events:none}
+        .sync-status.show{opacity:1}
+        .sync-status.ok{background:#065f46}
+        .sync-status.err{background:#991b1b}
+        @media(max-width:992px){
+            .hero .container{grid-template-columns:1fr;text-align:center}
+            .hero-content p{margin-left:auto;margin-right:auto}
+            .hero-buttons{justify-content:center}
+            .contact-wrapper{grid-template-columns:1fr}
+            .admin-body{flex-direction:column}
+            .admin-sidebar{flex-direction:row;width:100%;overflow-x:auto;flex-shrink:0;padding:10px;gap:4px}
+            .admin-sidebar button{white-space:nowrap;padding:10px 14px;font-size:.8rem}
+            .stats-grid{gap:30px}
+            .stats-grid .number{font-size:2.2rem}
+            .umrah-container{flex-direction:column;gap:30px}
+            .umrah-icon-wrapper{width:120px;height:120px}
+            .umrah-icon-wrapper i{font-size:3.5rem}
+            .umrah-content h2{font-size:1.8rem}
+            .ads-grid,.jobs-grid{grid-template-columns:1fr}
+        }
+        @media(max-width:768px){
+            .nav-links{display:none;flex-direction:column;width:100%;background:#fff;padding:20px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);gap:15px}
+            .nav-links.open{display:flex}
+            .mobile-toggle{display:block}
+            .hero-content h1{font-size:2.2rem}
+            .section-title{font-size:1.8rem}
+            .services-grid,.portfolio-grid,.testimonials-grid{grid-template-columns:1fr}
+            .admin-panel{height:95vh;width:98%}
+            .stats-grid{flex-direction:column;gap:20px}
+            .umrah-section{padding:50px 0}
+            .umrah-content h2{font-size:1.6rem}
+            .umrah-content p{font-size:1rem}
+            .admin-header{gap:8px}
+            .admin-header h2{font-size:1rem}
+        }
+        @media(max-width:480px){
+            .hero-content h1{font-size:1.8rem}
+            .btn-primary,.btn-outline{padding:10px 20px;font-size:.9rem}
+            .btn-umrah{padding:12px 30px;font-size:1rem}
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <div class="logo" id="logoDisplay">
+                <i class="fas fa-bus"></i>
+                <span>النقل البري</span> للسفريات
+            </div>
+            <button class="mobile-toggle" onclick="toggleMenu()" aria-label="القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-links" id="navLinks">
+                <a href="#services">خدماتنا</a>
+                <a href="#umrah">تأشيرة العمرة</a>
+                <a href="#portfolio">رحلاتنا</a>
+                <a href="#jobs-section">وظائف</a>
+                <a href="#testimonials">آراء العملاء</a>
+                <a href="#faq">أسئلة</a>
+                <a href="#contact" class="nav-cta">احجز الآن</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content" id="heroContent">
+                <h1>مع <span id="heroName">النقل البري</span><br /><span id="heroTitle">للسفريات والسياحة</span></h1>
+                <p id="heroDesc">نقدم لك أفضل خدمات النقل البري والجولات السياحية بأعلى معايير الأمان والراحة.</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn-primary" id="heroBtn1">احجز رحلتك</a>
+                    <a href="#umrah" class="btn-outline" id="heroBtn2">استكشف الوجهات</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://placehold.co/500x400/3b82f6/ffffff?text=%D8%A7%D9%84%D9%86%D9%82%D9%84+%D8%A7%D9%84%D8%A8%D8%B1%D9%8A" alt="النقل البري" id="heroImg" />
+            </div>
+        </div>
+    </section>
+
+    <section class="ads-section" id="ads">
+        <div class="container">
+            <h2 class="section-title" id="adsTitle">🎯 عروض خاصة</h2>
+            <p class="section-sub" id="adsSub">اغتنم أفضل العروض والتخفيضات</p>
+            <div class="ads-grid" id="adsGrid"></div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title" id="servicesTitle">خدماتنا المتميزة</h2>
+            <p class="section-sub" id="servicesSub">نوفر لك كل ما تحتاجه لرحلة مريحة وآمنة</p>
+            <div class="services-grid" id="servicesGrid"></div>
+        </div>
+    </section>
+
+    <section class="umrah-section" id="umrah">
+        <div class="container">
+            <div class="umrah-container">
+                <div class="umrah-icon-wrapper"><i class="fas fa-kaaba"></i></div>
+                <div class="umrah-content" id="umrahContent">
+                    <h2 id="umrahTitle">تأشيرة <span class="highlight">العمرة</span></h2>
+                    <p id="umrahDesc">نستخرجها خلال أيام بكل سهولة ويسر.</p>
+                    <div class="duration-badge" id="umrahBadge"><i class="fas fa-clock"></i> خلال 3 - 7 أيام عمل</div>
+                    <br />
+                    <a href="#contact" class="btn-umrah" id="umrahBtn">اطلبها الآن <i class="fas fa-arrow-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <h2 class="section-title" id="portfolioTitle">رحلاتنا المنظمة</h2>
+            <p class="section-sub" id="portfolioSub">نقدم باقات سياحية متكاملة</p>
+            <div class="portfolio-grid" id="portfolioGrid"></div>
+        </div>
+    </section>
+
+    <section class="jobs-section" id="jobs-section">
+        <div class="container">
+            <h2 class="section-title" id="jobsSectionTitle">💼 وظائف شاغرة</h2>
+            <p class="section-sub" id="jobsSectionSub">انضم إلى فريقنا وكن جزءاً من النجاح</p>
+            <div class="jobs-grid" id="jobsGrid"></div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2 class="section-title" id="testimonialsTitle">ماذا يقول عملاؤنا؟</h2>
+            <p class="section-sub" id="testimonialsSub">آراء حقيقية من مسافرين</p>
+            <div class="testimonials-grid" id="testimonialsGrid"></div>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title" id="faqTitle">أسئلة شائعة</h2>
+            <p class="section-sub" id="faqSub">إجابات لأهم استفسارات المسافرين</p>
+            <div class="faq-list" id="faqList"></div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title" id="contactTitle">تواصل معنا</h2>
+            <p class="section-sub" id="contactSub">احجز رحلتك أو استفسر عن أي خدمة</p>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3 id="contactHeading">نحن هنا لخدمتك</h3>
+                    <p id="contactDesc">يمكنك التواصل معنا عبر النموذج أو وسائل التواصل الاجتماعي.</p>
+                    <div class="social-links" id="socialLinks">
+                        <a href="#" target="_blank" data-platform="twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank" data-platform="instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank" data-platform="linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" data-platform="youtube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" target="_blank" data-platform="tiktok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                    <div style="margin-top:20px;">
+                        <p><i class="fas fa-envelope" style="color:#3b82f6;margin-left:10px;"></i> <span id="contactEmail">info@travelbus.com</span></p>
+                        <p><i class="fas fa-phone" style="color:#3b82f6;margin-left:10px;"></i> <span id="contactPhone">+967 77 000 0000</span></p>
+                    </div>
+                </div>
+                <form class="contact-form" onsubmit="handleContactSubmit(event);">
+                    <input type="text" placeholder="الاسم الكامل" required />
+                    <input type="email" placeholder="البريد الإلكتروني" required />
+                    <input type="text" placeholder="الوجهة المفضلة (اختياري)" />
+                    <textarea placeholder="اكتب رسالتك أو استفسارك..." required></textarea>
+                    <button type="submit" class="btn-primary">إرسال الطلب</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <h2 class="section-title">إحصائياتنا</h2>
+            <p class="section-sub">أرقام تعكس ثقتكم بنا</p>
+            <div class="stats-grid">
+                <div><div class="number" id="stat1Num">+150</div><span class="label" id="stat1Label">رحلة منظمة</span></div>
+                <div><div class="number" id="stat2Num">+25</div><span class="label" id="stat2Label">وجهة سياحية</span></div>
+                <div><div class="number" id="stat3Num">+5K</div><span class="label" id="stat3Label">مسافر سعيد</span></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p id="footerText">&copy; 2026 <a href="#">النقل البري للسفريات والسياحه</a> - جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <button class="admin-trigger" id="adminTriggerBtn" title="لوحة التحكم" onclick="openAdminLogin()">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <div class="sync-status" id="syncStatus"></div>
+
+    <div class="admin-overlay" id="adminOverlay" style="display:none;">
+        <div class="admin-login-box" id="adminLoginBox">
+            <i class="fas fa-lock"></i>
+            <h3>لوحة التحكم</h3>
+            <p>أدخل رمز الدخول للمتابعة</p>
+            <input type="password" id="adminCodeInput" placeholder="••••••" maxlength="10" onkeydown="if(event.key==='Enter')verifyAdminCode();" />
+            <button class="login-btn" onclick="verifyAdminCode()">دخول</button>
+            <p class="login-error" id="loginError">الرمز غير صحيح</p>
+        </div>
+        <div class="admin-panel" id="adminPanel" style="display:none;">
+            <div class="admin-header">
+                <h2><i class="fas fa-sliders-h"></i> لوحة تحكم المالك</h2>
+                <div class="header-actions">
+                    <span class="admin-role-badge role-owner">مالك</span>
+                    <button class="admin-logout-btn" onclick="logoutToLogin()" title="تسجيل الخروج"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                    <button class="admin-close" onclick="closeAdmin()">✕</button>
+                </div>
+            </div>
+            <div class="admin-body">
+                <div class="admin-sidebar" id="adminSidebar">
+                    <button class="active" data-section="sec-hero"><i class="fas fa-home"></i> الرئيسية</button>
+                    <button data-section="sec-services"><i class="fas fa-bus"></i> الخدمات</button>
+                    <button data-section="sec-umrah"><i class="fas fa-kaaba"></i> تأشيرة العمرة</button>
+                    <button data-section="sec-portfolio"><i class="fas fa-map-marked-alt"></i> الرحلات</button>
+                    <button data-section="sec-ads"><i class="fas fa-ad"></i> الإعلانات</button>
+                    <button data-section="sec-jobs"><i class="fas fa-briefcase"></i> الوظائف</button>
+                    <button data-section="sec-testimonials"><i class="fas fa-star"></i> الشهادات</button>
+                    <button data-section="sec-faq"><i class="fas fa-question-circle"></i> الأسئلة</button>
+                    <button data-section="sec-contact"><i class="fas fa-envelope"></i> التواصل</button>
+                    <button data-section="sec-social"><i class="fas fa-share-alt"></i> التواصل الاجتماعي</button>
+                    <button data-section="sec-settings"><i class="fas fa-cog"></i> الإعدادات</button>
+                </div>
+                <div class="admin-content" id="adminContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // ============ إعدادات Supabase ============
+        // =============================================
+        const SUPABASE_URL = 'https://yqbyugeyqwmdryeweoyn.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_FHRe0LUr1Hae90sOnKngng_-gxPFz5u';
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // رمز المالك (مخفي)
+        const ADMIN_CODE = '77353';
+
+        // =============================================
+        // ============ البيانات الافتراضية ============
+        // =============================================
+        const DEFAULT_DATA = {
+            settings: {
+                logoIcon: 'fa-bus', logoText1: 'النقل البري', logoText2: 'للسفريات',
+                heroName: 'النقل البري', heroTitle: 'للسفريات والسياحة',
+                heroDesc: 'نقدم لك أفضل خدمات النقل البري والجولات السياحية بأعلى معايير الأمان والراحة. وجهاتنا تغطي أهم المدن والمعالم السياحية.',
+                heroBtn1: 'احجز رحلتك', heroBtn2: 'استكشف الوجهات',
+                heroImg: 'https://placehold.co/500x400/3b82f6/ffffff?text=%D8%A7%D9%84%D9%86%D9%82%D9%84+%D8%A7%D9%84%D8%A8%D8%B1%D9%8A',
+                stat1Num: '+150', stat1Label: 'رحلة منظمة',
+                stat2Num: '+25', stat2Label: 'وجهة سياحية',
+                stat3Num: '+5K', stat3Label: 'مسافر سعيد',
+                servicesTitle: 'خدماتنا المتميزة', servicesSub: 'نوفر لك كل ما تحتاجه لرحلة مريحة وآمنة',
+                portfolioTitle: 'رحلاتنا المنظمة', portfolioSub: 'نقدم باقات سياحية متكاملة تشمل النقل والإقامة والجولات',
+                testimonialsTitle: 'ماذا يقول عملاؤنا؟', testimonialsSub: 'آراء حقيقية من مسافرين استمتعوا بخدماتنا',
+                faqTitle: 'أسئلة شائعة', faqSub: 'إجابات لأهم استفسارات المسافرين',
+                contactTitle: 'تواصل معنا', contactSub: 'احجز رحلتك أو استفسر عن أي خدمة',
+                contactHeading: 'نحن هنا لخدمتك', contactDesc: 'يمكنك التواصل معنا عبر النموذج أو عبر وسائل التواصل الاجتماعي. سنرد عليك في أقرب وقت.',
+                contactEmail: 'info@travelbus.com', contactPhone: '+967 77 000 0000',
+                footerText: '© 2026 <a href="#">النقل البري للسفريات والسياحه</a> - جميع الحقوق محفوظة.',
+                umrahTitle: 'تأشيرة <span class="highlight">العمرة</span>',
+                umrahDesc: 'نستخرجها خلال أيام بكل سهولة ويسر. خدمة سريعة وموثوقة لرحلتك المباركة.',
+                umrahBadge: '<i class="fas fa-clock"></i> خلال 3 - 7 أيام عمل',
+                umrahBtn: 'اطلبها الآن <i class="fas fa-arrow-left"></i>',
+                adsTitle: '🎯 عروض خاصة', adsSub: 'اغتنم أفضل العروض والتخفيضات',
+                jobsSectionTitle: '💼 وظائف شاغرة', jobsSectionSub: 'انضم إلى فريقنا وكن جزءاً من النجاح',
+            },
+            services: [
+                { icon: 'fa-bus', title: 'نقل ركاب داخلي', desc: 'خدمة نقل مريحة وآمنة بين المدن والمحافظات بأسطول حديث من الحافلات.' },
+                { icon: 'fa-umbrella-beach', title: 'جولات سياحية', desc: 'باقات سياحية تشمل زيارة أشهر المعالم التاريخية والطبيعية مع مرشدين محترفين.' },
+                { icon: 'fa-hotel', title: 'حجز فنادق ومنتجعات', desc: 'نوفر لك أفضل عروض الإقامة في فنادق ومنتجعات راقية بأسعار تنافسية.' },
+                { icon: 'fa-plane', title: 'تنسيق رحلات طيران', desc: 'ننسق حجوزات الطيران الداخلية والدولية مع أفضل شركات الطيران.' },
+                { icon: 'fa-users', title: 'رحلات جماعية ومؤتمرات', desc: 'تنظيم رحلات للمجموعات والشركات والمؤتمرات مع برامج مخصصة.' },
+                { icon: 'fa-clock', title: 'خدمة نقل المطار', desc: 'خدمة نقل من وإلى المطار على مدار الساعة بسيارات مريحة.' },
+            ],
+            portfolio: [
+                { icon: 'fa-landmark', title: 'رحلة صنعاء - سيئون', desc: 'باقة 3 أيام شملت النقل والإقامة في منتجع سيئون وزيارة وادي حضرموت.' },
+                { icon: 'fa-mountain', title: 'جولة جبال السودة', desc: 'رحلة استكشافية إلى جبال السودة في عسير مع مرشد محلي ووجبات.' },
+                { icon: 'fa-archway', title: 'زيارة مدينة شبام القديمة', desc: 'جولة ثقافية في مدينة شبام التاريخية "مانهاتن الصحراء" مع دليل متخصص.' },
+                { icon: 'fa-water', title: 'رحلة ساحل المكلا', desc: 'استجمام على شواطئ المكلا مع أنشطة بحرية ورحلة عشاء على الشاطئ.' },
+            ],
+            testimonials: [
+                { text: 'خدمة ممتازة ورحلات منظمة بدقة. الحافلات نظيفة والسائقون محترفون. أنصح بها بشدة.', author: 'أحمد الحضرمي', role: 'مسافر متكرر' },
+                { text: 'استمتعت بجولة شبام القديمة كثيراً. المرشد كان على دراية كبيرة بالتاريخ. تجربة لا تُنسى.', author: 'سارة الكثيري', role: 'سائحة' },
+                { text: 'نقل المطار كان في الموعد، والسيارة مريحة جداً. سعر معقول وجودة عالية.', author: 'محمد البكري', role: 'رجل أعمال' },
+            ],
+            faq: [
+                { question: 'ما هي أسعار الرحلات؟', answer: 'الأسعار تختلف حسب الوجهة ونوع الخدمة (نقل فقط، باقة سياحية، إقامة). يمكنك التواصل معنا للحصول على عرض مفصل.' },
+                { question: 'هل توفرون مرشدين سياحيين؟', answer: 'نعم، جميع باقاتنا السياحية تشمل مرشدين محترفين يتحدثون العربية والإنجليزية.' },
+                { question: 'كيف يمكنني حجز رحلة؟', answer: 'يمكنك الحجز عبر نموذج التواصل في الموقع، أو الاتصال بنا مباشرة، وسنقوم بترتيب كل شيء.' },
+                { question: 'هل توجد خصومات للمجموعات؟', answer: 'نعم، نقدم خصومات خاصة للمجموعات والشركات والمؤسسات حسب عدد المسافرين.' },
+            ],
+            social: { twitter: '#', instagram: '#', linkedin: '#', youtube: '#', tiktok: '#' },
+            ads: [
+                { title: '🔥 عرض خاص - خصم 20%', desc: 'احجز رحلتك الآن واستفد من خصم 20% على جميع الباقات السياحية.', icon: 'fa-tag', linkUrl: '#contact', active: true },
+                { title: '🕋 رحلة العمرة المخفضة', desc: 'باقات عمرة بأسعار منافسة جداً. احجز مقعدك الآن قبل نفاد المقاعد.', icon: 'fa-kaaba', linkUrl: '#umrah', active: true },
+            ],
+            jobs: [
+                { title: 'سائق حافلة', company: 'النقل البري للسفريات', location: 'صنعاء', type: 'دوام كامل', desc: 'نبحث عن سائقين محترفين للعمل على خطوطنا الداخلية بين المدن.', requirements: 'رخصة قيادة عمومي، خبرة 3 سنوات، حسن السيرة والسلوك.', postedDate: '2026-07-20', active: true },
+                { title: 'مرشد سياحي', company: 'النقل البري للسفريات', location: 'حضرموت', type: 'دوام جزئي', desc: 'مرشد سياحي للجولات في وادي حضرموت والمناطق التاريخية والأثرية.', requirements: 'معرفة عميقة بالتاريخ والثقافة المحلية، لغة إنجليزية ممتازة.', postedDate: '2026-07-25', active: true },
+            ],
+        };
+
+        let siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        let currentAdminSection = 'sec-hero';
+        let isLoggedIn = false;
+        let dataLoaded = false;
+
+        // =============================================
+        // ============ إشعار الحالة ============
+        // =============================================
+        function showStatus(msg, type = 'ok') {
+            const el = document.getElementById('syncStatus');
+            el.textContent = msg;
+            el.className = 'sync-status show ' + type;
+            setTimeout(() => { el.className = 'sync-status'; }, 2500);
+        }
+
+        // =============================================
+        // ============ تحميل البيانات من Supabase ============
+        // =============================================
+        async function loadFromSupabase() {
+            try {
+                // الإعدادات
+                const { data: settingsRows, error: sErr } = await sb.from('settings').select('*');
+                if (sErr) throw sErr;
+                if (settingsRows && settingsRows.length) {
+                    settingsRows.forEach(row => {
+                        if (row.value !== null && row.value !== undefined) {
+                            siteData.settings[row.key] = row.value;
+                        }
+                    });
+                    dataLoaded = true;
+                }
+
+                // الروابط الاجتماعية
+                const { data: socialRows } = await sb.from('social_links').select('*');
+                if (socialRows && socialRows.length) {
+                    socialRows.forEach(row => { siteData.social[row.platform] = row.url || '#'; });
+                }
+
+                // الخدمات
+                const { data: servicesRows } = await sb.from('services').select('*').order('id');
+                if (servicesRows && servicesRows.length) {
+                    siteData.services = servicesRows.map(r => ({ icon: r.icon || 'fa-star', title: r.title, desc: r.description || '' }));
+                }
+
+                // الرحلات
+                const { data: portfolioRows } = await sb.from('portfolio').select('*').order('id');
+                if (portfolioRows && portfolioRows.length) {
+                    siteData.portfolio = portfolioRows.map(r => ({ icon: r.icon || 'fa-map', title: r.title, desc: r.description || '' }));
+                }
+
+                // الشهادات
+                const { data: testimonialsRows } = await sb.from('testimonials').select('*').order('id');
+                if (testimonialsRows && testimonialsRows.length) {
+                    siteData.testimonials = testimonialsRows.map(r => ({ text: r.text, author: r.author, role: r.role || '' }));
+                }
+
+                // الأسئلة
+                const { data: faqRows } = await sb.from('faq').select('*').order('id');
+                if (faqRows && faqRows.length) {
+                    siteData.faq = faqRows.map(r => ({ question: r.question, answer: r.answer }));
+                }
+
+                // الإعلانات
+                const { data: adsRows } = await sb.from('ads').select('*').order('id');
+                if (adsRows && adsRows.length) {
+                    siteData.ads = adsRows.map(r => ({ title: r.title, desc: r.description || '', icon: r.icon || 'fa-star', linkUrl: r.link_url || '#', active: r.active !== false }));
+                }
+
+                // الوظائف
+                const { data: jobsRows } = await sb.from('jobs').select('*').order('id');
+                if (jobsRows && jobsRows.length) {
+                    siteData.jobs = jobsRows.map(r => ({
+                        title: r.title, company: r.company || '', location: r.location || '',
+                        type: r.type || '', desc: r.description || '', requirements: r.requirements || '',
+                        postedDate: r.posted_date || '', active: r.active !== false
+                    }));
+                }
+
+                console.log('✅ تم تحميل البيانات من Supabase');
+            } catch (e) {
+                console.warn('⚠️ تعذر التحميل من Supabase - سيتم استخدام البيانات الافتراضية:', e.message);
+            }
+            updateWebsiteUI();
+        }
+
+        // =============================================
+        // ============ مزامنة البيانات إلى Supabase ============
+        // =============================================
+        async function syncAllToSupabase() {
+            try {
+                // الإعدادات
+                const settingsRows = Object.entries(siteData.settings).map(([key, value]) => ({
+                    key, value: (value === null || value === undefined) ? '' : String(value)
+                }));
+                const { error: e1 } = await sb.from('settings').upsert(settingsRows, { onConflict: 'key' });
+                if (e1) throw e1;
+
+                // الروابط الاجتماعية
+                const socialRows = Object.entries(siteData.social).map(([platform, url]) => ({ platform, url: url || '' }));
+                const { error: e2 } = await sb.from('social_links').upsert(socialRows, { onConflict: 'platform' });
+                if (e2) throw e2;
+
+                // الخدمات
+                await sb.from('services').delete().gte('id', 0);
+                if (siteData.services.length) {
+                    const { error } = await sb.from('services').insert(siteData.services.map(s => ({
+                        icon: s.icon, title: s.title, description: s.desc
+                    })));
+                    if (error) throw error;
+                }
+
+                // الرحلات
+                await sb.from('portfolio').delete().gte('id', 0);
+                if (siteData.portfolio.length) {
+                    const { error } = await sb.from('portfolio').insert(siteData.portfolio.map(p => ({
+                        icon: p.icon, title: p.title, description: p.desc
+                    })));
+                    if (error) throw error;
+                }
+
+                // الشهادات
+                await sb.from('testimonials').delete().gte('id', 0);
+                if (siteData.testimonials.length) {
+                    const { error } = await sb.from('testimonials').insert(siteData.testimonials.map(t => ({
+                        text: t.text, author: t.author, role: t.role
+                    })));
+                    if (error) throw error;
+                }
+
+                // الأسئلة
+                await sb.from('faq').delete().gte('id', 0);
+                if (siteData.faq.length) {
+                    const { error } = await sb.from('faq').insert(siteData.faq.map(f => ({
+                        question: f.question, answer: f.answer
+                    })));
+                    if (error) throw error;
+                }
+
+                // الإعلانات
+                await sb.from('ads').delete().gte('id', 0);
+                if (siteData.ads.length) {
+                    const { error } = await sb.from('ads').insert(siteData.ads.map(a => ({
+                        title: a.title, description: a.desc, icon: a.icon, link_url: a.linkUrl, active: a.active
+                    })));
+                    if (error) throw error;
+                }
+
+                // الوظائف
+                await sb.from('jobs').delete().gte('id', 0);
+                if (siteData.jobs.length) {
+                    const { error } = await sb.from('jobs').insert(siteData.jobs.map(j => ({
+                        title: j.title, company: j.company, location: j.location, type: j.type,
+                        description: j.desc, requirements: j.requirements,
+                        posted_date: j.postedDate || new Date().toISOString().split('T')[0],
+                        active: j.active
+                    })));
+                    if (error) throw error;
+                }
+
+                console.log('✅ تمت المزامنة بنجاح');
+                showStatus('✅ تم الحفظ في قاعدة البيانات', 'ok');
+                return true;
+            } catch (e) {
+                console.error('❌ خطأ في المزامنة:', e);
+                showStatus('❌ فشل الحفظ: ' + e.message, 'err');
+                return false;
+            }
+        }
+
+        // =============================================
+        // ============ تحديث واجهة الموقع ============
+        // =============================================
+        function updateWebsiteUI() {
+            const s = siteData.settings;
+            const logoDisplay = document.getElementById('logoDisplay');
+            if (logoDisplay) logoDisplay.innerHTML = `<i class="fas ${s.logoIcon}"></i> <span>${s.logoText1}</span> ${s.logoText2}`;
+            document.getElementById('heroName').textContent = s.heroName;
+            document.getElementById('heroTitle').textContent = s.heroTitle;
+            document.getElementById('heroDesc').textContent = s.heroDesc;
+            document.getElementById('heroBtn1').textContent = s.heroBtn1;
+            document.getElementById('heroBtn2').textContent = s.heroBtn2;
+            document.getElementById('heroImg').src = s.heroImg;
+            document.getElementById('heroImg').alt = s.heroName;
+            document.getElementById('stat1Num').textContent = s.stat1Num;
+            document.getElementById('stat1Label').textContent = s.stat1Label;
+            document.getElementById('stat2Num').textContent = s.stat2Num;
+            document.getElementById('stat2Label').textContent = s.stat2Label;
+            document.getElementById('stat3Num').textContent = s.stat3Num;
+            document.getElementById('stat3Label').textContent = s.stat3Label;
+            document.getElementById('servicesTitle').textContent = s.servicesTitle;
+            document.getElementById('servicesSub').textContent = s.servicesSub;
+            document.getElementById('umrahTitle').innerHTML = s.umrahTitle;
+            document.getElementById('umrahDesc').textContent = s.umrahDesc;
+            document.getElementById('umrahBadge').innerHTML = s.umrahBadge;
+            document.getElementById('umrahBtn').innerHTML = s.umrahBtn;
+            document.getElementById('portfolioTitle').textContent = s.portfolioTitle;
+            document.getElementById('portfolioSub').textContent = s.portfolioSub;
+            document.getElementById('testimonialsTitle').textContent = s.testimonialsTitle;
+            document.getElementById('testimonialsSub').textContent = s.testimonialsSub;
+            document.getElementById('faqTitle').textContent = s.faqTitle;
+            document.getElementById('faqSub').textContent = s.faqSub;
+            document.getElementById('contactTitle').textContent = s.contactTitle;
+            document.getElementById('contactSub').textContent = s.contactSub;
+            document.getElementById('contactHeading').textContent = s.contactHeading;
+            document.getElementById('contactDesc').textContent = s.contactDesc;
+            document.getElementById('contactEmail').textContent = s.contactEmail;
+            document.getElementById('contactPhone').textContent = s.contactPhone;
+            document.getElementById('footerText').innerHTML = s.footerText;
+            document.getElementById('adsTitle').textContent = s.adsTitle || '🎯 عروض خاصة';
+            document.getElementById('adsSub').textContent = s.adsSub || 'اغتنم أفضل العروض والتخفيضات';
+            document.getElementById('jobsSectionTitle').textContent = s.jobsSectionTitle || '💼 وظائف شاغرة';
+            document.getElementById('jobsSectionSub').textContent = s.jobsSectionSub || 'انضم إلى فريقنا وكن جزءاً من النجاح';
+            document.querySelectorAll('#socialLinks a').forEach(a => {
+                const p = a.getAttribute('data-platform');
+                if (p && siteData.social[p] !== undefined) a.href = siteData.social[p] || '#';
+            });
+            renderServices(); renderPortfolio(); renderTestimonials();
+            renderFAQ(); renderAds(); renderJobs();
+        }
+
+        function renderServices() {
+            document.getElementById('servicesGrid').innerHTML = siteData.services.map(sv => `
+                <div class="service-card"><i class="fas ${sv.icon}"></i><h3>${sv.title}</h3><p>${sv.desc}</p></div>
+            `).join('');
+        }
+        function renderPortfolio() {
+            document.getElementById('portfolioGrid').innerHTML = siteData.portfolio.map(item => `
+                <div class="portfolio-item"><div class="img-placeholder"><i class="fas ${item.icon}"></i></div>
+                <div class="info"><h4>${item.title}</h4><p>${item.desc}</p></div></div>
+            `).join('');
+        }
+        function renderTestimonials() {
+            document.getElementById('testimonialsGrid').innerHTML = siteData.testimonials.map(t => `
+                <div class="testimonial-card"><p>"${t.text}"</p><div class="author">${t.author}</div><div class="role">${t.role}</div></div>
+            `).join('');
+        }
+        function renderFAQ() {
+            document.getElementById('faqList').innerHTML = siteData.faq.map((f, i) => `
+                <div class="faq-item ${i === 0 ? 'active' : ''}" onclick="toggleFaq(this)">
+                    <div class="question"><span>${f.question}</span><i class="fas fa-chevron-down"></i></div>
+                    <div class="answer">${f.answer}</div>
+                </div>
+            `).join('');
+        }
+        function renderAds() {
+            const grid = document.getElementById('adsGrid');
+            const active = siteData.ads.filter(a => a.active);
+            if (!active.length) {
+                grid.innerHTML = '<div class="no-ads-msg"><i class="fas fa-bullhorn" style="font-size:2.5rem;display:block;margin-bottom:10px;color:#d4a853;"></i>لا توجد عروض حالياً. تابعنا للمزيد!</div>';
+            } else {
+                grid.innerHTML = active.map(ad => `
+                    <div class="ad-card"><div class="ad-icon"><i class="fas ${ad.icon || 'fa-star'}"></i></div>
+                    <h3>${ad.title}</h3><p>${ad.desc}</p>
+                    <a href="${ad.linkUrl || '#'}" class="btn-ad">اطلع على العرض <i class="fas fa-arrow-left" style="margin-right:6px;"></i></a></div>
+                `).join('');
+            }
+        }
+        function renderJobs() {
+            const grid = document.getElementById('jobsGrid');
+            const active = siteData.jobs.filter(j => j.active);
+            if (!active.length) {
+                grid.innerHTML = '<div class="no-jobs-msg"><i class="fas fa-briefcase" style="font-size:2.5rem;display:block;margin-bottom:10px;color:#94a3b8;"></i>لا توجد وظائف شاغرة حالياً.</div>';
+            } else {
+                grid.innerHTML = active.map(job => {
+                    let bc = 'badge-full';
+                    if (job.type.includes('جزئي')) bc = 'badge-part';
+                    else if (job.type.includes('عن بعد') || job.type.includes('remote')) bc = 'badge-remote';
+                    else if (job.type.includes('عقد') || job.type.includes('مؤقت')) bc = 'badge-contract';
+                    return `<div class="job-card">
+                        <div class="job-header"><span class="job-title">${job.title}</span><span class="job-type-badge ${bc}">${job.type}</span></div>
+                        <div class="job-meta"><span><i class="fas fa-building"></i> ${job.company}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+                        <span><i class="fas fa-calendar-alt"></i> ${job.postedDate}</span></div>
+                        <p class="job-desc">${job.desc}</p>
+                        <div class="job-req"><strong>المتطلبات:</strong> ${job.requirements}</div>
+                        <a href="#contact" class="btn-apply">تقديم الآن <i class="fas fa-paper-plane" style="margin-right:6px;"></i></a></div>`;
+                }).join('');
+            }
+        }
+
+        // =============================================
+        // ============ لوحة التحكم - الدخول ============
+        // =============================================
+        function openAdminLogin() {
+            document.getElementById('adminOverlay').style.display = 'flex';
+            document.getElementById('adminLoginBox').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('adminCodeInput').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('adminCodeInput').focus();
+            isLoggedIn = false;
+        }
+        function closeAdmin() {
+            document.getElementById('adminOverlay').style.display = 'none';
+            isLoggedIn = false;
+        }
+        function logoutToLogin() {
+            isLoggedIn = false;
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('adminLoginBox').style.display = 'block';
+            document.getElementById('adminCodeInput').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('adminCodeInput').focus();
+        }
+        function verifyAdminCode() {
+            const input = document.getElementById('adminCodeInput').value.trim();
+            if (input === ADMIN_CODE) {
+                isLoggedIn = true;
+                document.getElementById('adminLoginBox').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'flex';
+                document.getElementById('loginError').style.display = 'none';
+                currentAdminSection = 'sec-hero';
+                document.querySelectorAll('#adminSidebar button').forEach(b => b.classList.remove('active'));
+                const heroBtn = document.querySelector('#adminSidebar button[data-section="sec-hero"]');
+                if (heroBtn) heroBtn.classList.add('active');
+                renderAdminContent('sec-hero');
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('adminCodeInput').value = '';
+                document.getElementById('adminCodeInput').focus();
+                const box = document.getElementById('adminLoginBox');
+                box.style.animation = 'none'; box.offsetHeight; box.style.animation = 'shake .4s ease';
+            }
+        }
+        const shakeStyle = document.createElement('style');
+        shakeStyle.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}';
+        document.head.appendChild(shakeStyle);
+
+        document.getElementById('adminSidebar').addEventListener('click', function(e) {
+            const btn = e.target.closest('button');
+            if (!btn || !isLoggedIn) return;
+            const section = btn.getAttribute('data-section');
+            if (section) {
+                document.querySelectorAll('#adminSidebar button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentAdminSection = section;
+                renderAdminContent(section);
+            }
+        });
+
+        function escapeAttr(str) { return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+        function escapeHtml(str) { return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        // =============================================
+        // ============ عرض محتوى لوحة المالك ============
+        // =============================================
+        function renderAdminContent(section) {
+            const content = document.getElementById('adminContent');
+            const s = siteData.settings;
+            let html = '';
+            switch (section) {
+                case 'sec-hero':
+                    html = `<h3>⚡ القسم الترحيبي</h3>
+                        <div class="admin-form-group"><label>اسم الشركة</label><input type="text" id="edit-heroName" value="${escapeAttr(s.heroName)}" /></div>
+                        <div class="admin-form-group"><label>المسمى الوظيفي</label><input type="text" id="edit-heroTitle" value="${escapeAttr(s.heroTitle)}" /></div>
+                        <div class="admin-form-group"><label>الوصف</label><textarea id="edit-heroDesc">${escapeHtml(s.heroDesc)}</textarea></div>
+                        <div class="admin-form-group"><label>نص الزر الأول</label><input type="text" id="edit-heroBtn1" value="${escapeAttr(s.heroBtn1)}" /></div>
+                        <div class="admin-form-group"><label>نص الزر الثاني</label><input type="text" id="edit-heroBtn2" value="${escapeAttr(s.heroBtn2)}" /></div>
+                        <div class="admin-form-group"><label>رابط الصورة</label><input type="text" id="edit-heroImg" value="${escapeAttr(s.heroImg)}" /></div>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>📊 الإحصائيات</h4>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <div class="admin-form-group"><label>الرقم 1</label><input type="text" id="edit-stat1Num" value="${escapeAttr(s.stat1Num)}" /></div>
+                            <div class="admin-form-group"><label>النص 1</label><input type="text" id="edit-stat1Label" value="${escapeAttr(s.stat1Label)}" /></div>
+                            <div class="admin-form-group"><label>الرقم 2</label><input type="text" id="edit-stat2Num" value="${escapeAttr(s.stat2Num)}" /></div>
+                            <div class="admin-form-group"><label>النص 2</label><input type="text" id="edit-stat2Label" value="${escapeAttr(s.stat2Label)}" /></div>
+                            <div class="admin-form-group"><label>الرقم 3</label><input type="text" id="edit-stat3Num" value="${escapeAttr(s.stat3Num)}" /></div>
+                            <div class="admin-form-group"><label>النص 3</label><input type="text" id="edit-stat3Label" value="${escapeAttr(s.stat3Label)}" /></div>
+                        </div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveHeroSection()">💾 حفظ</button>`;
+                    break;
+                case 'sec-services':
+                    html = `<h3>🎯 الخدمات</h3>
+                        <div class="admin-form-group"><label>العنوان الرئيسي</label><input type="text" id="edit-servicesTitle" value="${escapeAttr(s.servicesTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-servicesSub" value="${escapeAttr(s.servicesSub)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveServicesHeader()" style="margin-bottom:16px;">💾 حفظ العناوين</button>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>القائمة</h4>
+                        ${siteData.services.map((sv, i) => `
+                            <div class="admin-list-item">
+                                <div class="item-info"><strong><i class="fas ${sv.icon}"></i> ${sv.title}</strong><small>${sv.desc.substring(0,50)}...</small></div>
+                                <div class="item-actions">
+                                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editServiceItem(${i})">✏️</button>
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deleteServiceItem(${i})">🗑️</button>
+                                </div>
+                            </div>`).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="addServiceItem()" style="margin-top:10px;">➕ إضافة</button>`;
+                    break;
+                case 'sec-umrah':
+                    html = `<h3>🕋 تأشيرة العمرة</h3>
+                        <div class="admin-form-group"><label>العنوان (HTML)</label><input type="text" id="edit-umrahTitle" value="${escapeAttr(s.umrahTitle)}" /></div>
+                        <div class="admin-form-group"><label>الوصف</label><input type="text" id="edit-umrahDesc" value="${escapeAttr(s.umrahDesc)}" /></div>
+                        <div class="admin-form-group"><label>شارة المدة</label><input type="text" id="edit-umrahBadge" value="${escapeAttr(s.umrahBadge)}" /></div>
+                        <div class="admin-form-group"><label>نص الزر</label><input type="text" id="edit-umrahBtn" value="${escapeAttr(s.umrahBtn)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveUmrahSection()">💾 حفظ</button>`;
+                    break;
+                case 'sec-portfolio':
+                    html = `<h3>📁 الرحلات</h3>
+                        <div class="admin-form-group"><label>العنوان</label><input type="text" id="edit-portfolioTitle" value="${escapeAttr(s.portfolioTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-portfolioSub" value="${escapeAttr(s.portfolioSub)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="savePortfolioHeader()" style="margin-bottom:16px;">💾 حفظ العناوين</button>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>القائمة</h4>
+                        ${siteData.portfolio.map((p, i) => `
+                            <div class="admin-list-item">
+                                <div class="item-info"><strong><i class="fas ${p.icon}"></i> ${p.title}</strong><small>${p.desc.substring(0,50)}...</small></div>
+                                <div class="item-actions">
+                                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editPortfolioItem(${i})">✏️</button>
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deletePortfolioItem(${i})">🗑️</button>
+                                </div>
+                            </div>`).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="addPortfolioItem()" style="margin-top:10px;">➕ إضافة</button>`;
+                    break;
+                case 'sec-ads':
+                    html = `<h3>📢 الإعلانات</h3>
+                        <div class="admin-form-group"><label>العنوان</label><input type="text" id="edit-adsTitle" value="${escapeAttr(s.adsTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-adsSub" value="${escapeAttr(s.adsSub)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveAdsHeader()" style="margin-bottom:16px;">💾 حفظ العناوين</button>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>القائمة</h4>
+                        ${siteData.ads.map((ad, i) => `
+                            <div class="admin-list-item">
+                                <div class="item-info"><strong><i class="fas ${ad.icon || 'fa-star'}"></i> ${ad.title}</strong><small>${ad.desc.substring(0,40)}...</small>
+                                <span class="admin-badge ${ad.active ? 'active-badge' : 'inactive-badge'}">${ad.active ? 'نشط' : 'مخفي'}</span></div>
+                                <div class="item-actions">
+                                    <button class="admin-btn admin-btn-${ad.active ? 'warning' : 'success'} admin-btn-sm" onclick="toggleAdActive(${i})">${ad.active ? 'إخفاء' : 'تنشيط'}</button>
+                                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editAdItem(${i})">✏️</button>
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deleteAdItem(${i})">🗑️</button>
+                                </div>
+                            </div>`).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="addAdItem()" style="margin-top:10px;">➕ إضافة</button>`;
+                    break;
+                case 'sec-jobs':
+                    html = `<h3>💼 الوظائف</h3>
+                        <div class="admin-form-group"><label>العنوان</label><input type="text" id="edit-jobsSectionTitle" value="${escapeAttr(s.jobsSectionTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-jobsSectionSub" value="${escapeAttr(s.jobsSectionSub)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveJobsHeader()" style="margin-bottom:16px;">💾 حفظ العناوين</button>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>القائمة</h4>
+                        ${siteData.jobs.map((job, i) => `
+                            <div class="admin-list-item">
+                                <div class="item-info"><strong>${job.title}</strong><small>${job.company} - ${job.location} | ${job.type}</small>
+                                <span class="admin-badge ${job.active ? 'active-badge' : 'inactive-badge'}">${job.active ? 'منشور' : 'مخفي'}</span></div>
+                                <div class="item-actions">
+                                    <button class="admin-btn admin-btn-${job.active ? 'warning' : 'success'} admin-btn-sm" onclick="toggleJobActive(${i})">${job.active ? 'إخفاء' : 'نشر'}</button>
+                                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editJobItem(${i})">✏️</button>
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deleteJobItem(${i})">🗑️</button>
+                                </div>
+                            </div>`).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="addJobItem()" style="margin-top:10px;">➕ إضافة</button>`;
+                    break;
+                case 'sec-testimonials':
+                    html = `<h3>⭐ الشهادات</h3>
+                        <div class="admin-form-group"><label>العنوان</label><input type="text" id="edit-testimonialsTitle" value="${escapeAttr(s.testimonialsTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-testimonialsSub" value="${escapeAttr(s.testimonialsSub)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveTestimonialsHeader()" style="margin-bottom:16px;">💾 حفظ العناوين</button>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>القائمة</h4>
+                        ${siteData.testimonials.map((t, i) => `
+                            <div class="admin-list-item">
+                                <div class="item-info"><strong>${t.author}</strong><small>${t.text.substring(0,40)}...</small><span class="admin-badge">${t.role}</span></div>
+                                <div class="item-actions">
+                                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editTestimonialItem(${i})">✏️</button>
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deleteTestimonialItem(${i})">🗑️</button>
+                                </div>
+                            </div>`).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="addTestimonialItem()" style="margin-top:10px;">➕ إضافة</button>`;
+                    break;
+                case 'sec-faq':
+                    html = `<h3>❓ الأسئلة الشائعة</h3>
+                        <div class="admin-form-group"><label>العنوان</label><input type="text" id="edit-faqTitle" value="${escapeAttr(s.faqTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-faqSub" value="${escapeAttr(s.faqSub)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveFaqHeader()" style="margin-bottom:16px;">💾 حفظ العناوين</button>
+                        <hr style="margin:16px 0;border-color:#e2e8f0;" />
+                        <h4>القائمة</h4>
+                        ${siteData.faq.map((f, i) => `
+                            <div class="admin-list-item">
+                                <div class="item-info"><strong>${f.question}</strong><small>${f.answer.substring(0,50)}...</small></div>
+                                <div class="item-actions">
+                                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editFaqItem(${i})">✏️</button>
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deleteFaqItem(${i})">🗑️</button>
+                                </div>
+                            </div>`).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="addFaqItem()" style="margin-top:10px;">➕ إضافة</button>`;
+                    break;
+                case 'sec-contact':
+                    html = `<h3>📞 التواصل</h3>
+                        <div class="admin-form-group"><label>العنوان</label><input type="text" id="edit-contactTitle" value="${escapeAttr(s.contactTitle)}" /></div>
+                        <div class="admin-form-group"><label>النص الفرعي</label><input type="text" id="edit-contactSub" value="${escapeAttr(s.contactSub)}" /></div>
+                        <div class="admin-form-group"><label>العنوان الجانبي</label><input type="text" id="edit-contactHeading" value="${escapeAttr(s.contactHeading)}" /></div>
+                        <div class="admin-form-group"><label>الوصف الجانبي</label><textarea id="edit-contactDesc">${escapeHtml(s.contactDesc)}</textarea></div>
+                        <div class="admin-form-group"><label>البريد</label><input type="email" id="edit-contactEmail" value="${escapeAttr(s.contactEmail)}" /></div>
+                        <div class="admin-form-group"><label>الهاتف</label><input type="text" id="edit-contactPhone" value="${escapeAttr(s.contactPhone)}" /></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveContactSection()">💾 حفظ</button>`;
+                    break;
+                case 'sec-social':
+                    html = `<h3>🔗 روابط التواصل الاجتماعي</h3>
+                        ${Object.keys(siteData.social).map(p => `
+                            <div class="admin-form-group"><label><i class="fab fa-${p}"></i> ${p}</label><input type="url" id="edit-social-${p}" value="${escapeAttr(siteData.social[p])}" /></div>
+                        `).join('')}
+                        <button class="admin-btn admin-btn-primary" onclick="saveSocialLinks()">💾 حفظ</button>`;
+                    break;
+                case 'sec-settings':
+                    html = `<h3>⚙️ الإعدادات</h3>
+                        <div class="admin-form-group"><label>أيقونة الشعار</label><input type="text" id="edit-logoIcon" value="${escapeAttr(s.logoIcon)}" /></div>
+                        <div class="admin-form-group"><label>نص الشعار - الملون</label><input type="text" id="edit-logoText1" value="${escapeAttr(s.logoText1)}" /></div>
+                        <div class="admin-form-group"><label>نص الشعار - العادي</label><input type="text" id="edit-logoText2" value="${escapeAttr(s.logoText2)}" /></div>
+                        <div class="admin-form-group"><label>نص التذييل (HTML)</label><textarea id="edit-footerText">${escapeHtml(s.footerText)}</textarea></div>
+                        <button class="admin-btn admin-btn-primary" onclick="saveSettings()">💾 حفظ</button>
+                        <hr style="margin:20px 0;border-color:#e2e8f0;" />
+                        <button class="admin-btn admin-btn-warning" onclick="seedDatabase()">📥 تحميل البيانات الافتراضية إلى قاعدة البيانات</button>
+                        <br /><br />
+                        <button class="admin-btn admin-btn-danger" onclick="resetAllData()">⚠️ استعادة البيانات الافتراضية</button>`;
+                    break;
+            }
+            content.innerHTML = html;
+        }
+
+        // =============================================
+        // ============ دوال الحفظ ============
+        // =============================================
+        async function saveHeroSection() {
+            const s = siteData.settings;
+            s.heroName = document.getElementById('edit-heroName')?.value || s.heroName;
+            s.heroTitle = document.getElementById('edit-heroTitle')?.value || s.heroTitle;
+            s.heroDesc = document.getElementById('edit-heroDesc')?.value || s.heroDesc;
+            s.heroBtn1 = document.getElementById('edit-heroBtn1')?.value || s.heroBtn1;
+            s.heroBtn2 = document.getElementById('edit-heroBtn2')?.value || s.heroBtn2;
+            s.heroImg = document.getElementById('edit-heroImg')?.value || s.heroImg;
+            s.stat1Num = document.getElementById('edit-stat1Num')?.value || s.stat1Num;
+            s.stat1Label = document.getElementById('edit-stat1Label')?.value || s.stat1Label;
+            s.stat2Num = document.getElementById('edit-stat2Num')?.value || s.stat2Num;
+            s.stat2Label = document.getElementById('edit-stat2Label')?.value || s.stat2Label;
+            s.stat3Num = document.getElementById('edit-stat3Num')?.value || s.stat3Num;
+            s.stat3Label = document.getElementById('edit-stat3Label')?.value || s.stat3Label;
+            updateWebsiteUI();
+            await syncAllToSupabase();
+        }
+        async function saveServicesHeader() {
+            siteData.settings.servicesTitle = document.getElementById('edit-servicesTitle')?.value || '';
+            siteData.settings.servicesSub = document.getElementById('edit-servicesSub')?.value || '';
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveUmrahSection() {
+            const s = siteData.settings;
+            s.umrahTitle = document.getElementById('edit-umrahTitle')?.value || s.umrahTitle;
+            s.umrahDesc = document.getElementById('edit-umrahDesc')?.value || s.umrahDesc;
+            s.umrahBadge = document.getElementById('edit-umrahBadge')?.value || s.umrahBadge;
+            s.umrahBtn = document.getElementById('edit-umrahBtn')?.value || s.umrahBtn;
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function savePortfolioHeader() {
+            siteData.settings.portfolioTitle = document.getElementById('edit-portfolioTitle')?.value || '';
+            siteData.settings.portfolioSub = document.getElementById('edit-portfolioSub')?.value || '';
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveTestimonialsHeader() {
+            siteData.settings.testimonialsTitle = document.getElementById('edit-testimonialsTitle')?.value || '';
+            siteData.settings.testimonialsSub = document.getElementById('edit-testimonialsSub')?.value || '';
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveFaqHeader() {
+            siteData.settings.faqTitle = document.getElementById('edit-faqTitle')?.value || '';
+            siteData.settings.faqSub = document.getElementById('edit-faqSub')?.value || '';
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveContactSection() {
+            const s = siteData.settings;
+            s.contactTitle = document.getElementById('edit-contactTitle')?.value || s.contactTitle;
+            s.contactSub = document.getElementById('edit-contactSub')?.value || s.contactSub;
+            s.contactHeading = document.getElementById('edit-contactHeading')?.value || s.contactHeading;
+            s.contactDesc = document.getElementById('edit-contactDesc')?.value || s.contactDesc;
+            s.contactEmail = document.getElementById('edit-contactEmail')?.value || s.contactEmail;
+            s.contactPhone = document.getElementById('edit-contactPhone')?.value || s.contactPhone;
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveSocialLinks() {
+            Object.keys(siteData.social).forEach(p => {
+                const input = document.getElementById('edit-social-' + p);
+                if (input) siteData.social[p] = input.value;
+            });
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveSettings() {
+            const s = siteData.settings;
+            s.logoIcon = document.getElementById('edit-logoIcon')?.value || s.logoIcon;
+            s.logoText1 = document.getElementById('edit-logoText1')?.value || s.logoText1;
+            s.logoText2 = document.getElementById('edit-logoText2')?.value || s.logoText2;
+            s.footerText = document.getElementById('edit-footerText')?.value || s.footerText;
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveAdsHeader() {
+            siteData.settings.adsTitle = document.getElementById('edit-adsTitle')?.value || '';
+            siteData.settings.adsSub = document.getElementById('edit-adsSub')?.value || '';
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+        async function saveJobsHeader() {
+            siteData.settings.jobsSectionTitle = document.getElementById('edit-jobsSectionTitle')?.value || '';
+            siteData.settings.jobsSectionSub = document.getElementById('edit-jobsSectionSub')?.value || '';
+            updateWebsiteUI(); await syncAllToSupabase();
+        }
+
+        async function resetAllData() {
+            if (confirm('⚠️ سيتم حذف جميع التعديلات واستعادة البيانات الافتراضية. متابعة؟')) {
+                siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                updateWebsiteUI(); renderAdminContent(currentAdminSection);
+                await syncAllToSupabase();
+            }
+        }
+        async function seedDatabase() {
+            if (confirm('📥 سيتم رفع البيانات الحالية (الافتراضية أو المحلية) إلى قاعدة البيانات. متابعة؟')) {
+                await syncAllToSupabase();
+                alert('✅ تم رفع البيانات إلى قاعدة البيانات بنجاح!');
+            }
+        }
+
+        // =============================================
+        // ============ CRUD الإعلانات ============
+        // =============================================
+        async function addAdItem() {
+            const title = prompt('عنوان الإعلان:', 'عرض جديد'); if (!title) return;
+            const desc = prompt('الوصف:', 'وصف مختصر'); if (!desc) return;
+            const icon = prompt('أيقونة (مثال: fa-star):', 'fa-tag');
+            const linkUrl = prompt('الرابط:', '#contact');
+            siteData.ads.push({ title, desc, icon: icon || 'fa-star', linkUrl: linkUrl || '#', active: true });
+            renderAds(); renderAdminContent('sec-ads'); await syncAllToSupabase();
+        }
+        async function editAdItem(i) {
+            const ad = siteData.ads[i];
+            const title = prompt('العنوان:', ad.title); if (title === null) return;
+            const desc = prompt('الوصف:', ad.desc); if (desc === null) return;
+            const icon = prompt('الأيقونة:', ad.icon || 'fa-star'); if (icon === null) return;
+            const linkUrl = prompt('الرابط:', ad.linkUrl || '#'); if (linkUrl === null) return;
+            siteData.ads[i] = { ...ad, title, desc, icon: icon || 'fa-star', linkUrl: linkUrl || '#' };
+            renderAds(); renderAdminContent('sec-ads'); await syncAllToSupabase();
+        }
+        async function deleteAdItem(i) {
+            if (confirm('حذف هذا الإعلان؟')) {
+                siteData.ads.splice(i, 1);
+                renderAds(); renderAdminContent('sec-ads'); await syncAllToSupabase();
+            }
+        }
+        async function toggleAdActive(i) {
+            siteData.ads[i].active = !siteData.ads[i].active;
+            renderAds(); renderAdminContent('sec-ads'); await syncAllToSupabase();
+        }
+
+        // =============================================
+        // ============ CRUD الوظائف ============
+        // =============================================
+        async function addJobItem() {
+            const title = prompt('المسمى الوظيفي:', 'وظيفة جديدة'); if (!title) return;
+            const company = prompt('الشركة:', 'النقل البري للسفريات'); if (!company) return;
+            const location = prompt('الموقع:', 'صنعاء'); if (!location) return;
+            const type = prompt('نوع الدوام:', 'دوام كامل'); if (!type) return;
+            const desc = prompt('الوصف:', 'وصف مختصر'); if (!desc) return;
+            const requirements = prompt('المتطلبات:', 'المتطلبات...'); if (!requirements) return;
+            siteData.jobs.push({ title, company, location, type, desc, requirements, postedDate: new Date().toISOString().split('T')[0], active: true });
+            renderJobs(); renderAdminContent('sec-jobs'); await syncAllToSupabase();
+        }
+        async function editJobItem(i) {
+            const job = siteData.jobs[i];
+            const title = prompt('المسمى:', job.title); if (title === null) return;
+            const company = prompt('الشركة:', job.company); if (company === null) return;
+            const location = prompt('الموقع:', job.location); if (location === null) return;
+            const type = prompt('نوع الدوام:', job.type); if (type === null) return;
+            const desc = prompt('الوصف:', job.desc); if (desc === null) return;
+            const requirements = prompt('المتطلبات:', job.requirements); if (requirements === null) return;
+            siteData.jobs[i] = { ...job, title, company, location, type, desc, requirements };
+            renderJobs(); renderAdminContent('sec-jobs'); await syncAllToSupabase();
+        }
+        async function deleteJobItem(i) {
+            if (confirm('حذف هذه الوظيفة؟')) {
+                siteData.jobs.splice(i, 1);
+                renderJobs(); renderAdminContent('sec-jobs'); await syncAllToSupabase();
+            }
+        }
+        async function toggleJobActive(i) {
+            siteData.jobs[i].active = !siteData.jobs[i].active;
+            renderJobs(); renderAdminContent('sec-jobs'); await syncAllToSupabase();
+        }
+
+        // =============================================
+        // ============ CRUD الخدمات ============
+        // =============================================
+        async function addServiceItem() {
+            const icon = prompt('الأيقونة:', 'fa-star'); if (!icon) return;
+            const title = prompt('العنوان:', 'خدمة جديدة'); if (!title) return;
+            const desc = prompt('الوصف:', 'وصف مختصر'); if (!desc) return;
+            siteData.services.push({ icon, title, desc });
+            renderServices(); renderAdminContent('sec-services'); await syncAllToSupabase();
+        }
+        async function editServiceItem(i) {
+            const sv = siteData.services[i];
+            const icon = prompt('الأيقونة:', sv.icon); if (icon === null) return;
+            const title = prompt('العنوان:', sv.title); if (title === null) return;
+            const desc = prompt('الوصف:', sv.desc); if (desc === null) return;
+            siteData.services[i] = { icon, title, desc };
+            renderServices(); renderAdminContent('sec-services'); await syncAllToSupabase();
+        }
+        async function deleteServiceItem(i) {
+            if (confirm('حذف هذه الخدمة؟')) {
+                siteData.services.splice(i, 1);
+                renderServices(); renderAdminContent('sec-services'); await syncAllToSupabase();
+            }
+        }
+
+        // =============================================
+        // ============ CRUD الرحلات ============
+        // =============================================
+        async function addPortfolioItem() {
+            const icon = prompt('الأيقونة:', 'fa-map'); if (!icon) return;
+            const title = prompt('العنوان:', 'رحلة جديدة'); if (!title) return;
+            const desc = prompt('الوصف:', 'وصف مختصر'); if (!desc) return;
+            siteData.portfolio.push({ icon, title, desc });
+            renderPortfolio(); renderAdminContent('sec-portfolio'); await syncAllToSupabase();
+        }
+        async function editPortfolioItem(i) {
+            const p = siteData.portfolio[i];
+            const icon = prompt('الأيقونة:', p.icon); if (icon === null) return;
+            const title = prompt('العنوان:', p.title); if (title === null) return;
+            const desc = prompt('الوصف:', p.desc); if (desc === null) return;
+            siteData.portfolio[i] = { icon, title, desc };
+            renderPortfolio(); renderAdminContent('sec-portfolio'); await syncAllToSupabase();
+        }
+        async function deletePortfolioItem(i) {
+            if (confirm('حذف هذه الرحلة؟')) {
+                siteData.portfolio.splice(i, 1);
+                renderPortfolio(); renderAdminContent('sec-portfolio'); await syncAllToSupabase();
+            }
+        }
+
+        // =============================================
+        // ============ CRUD الشهادات ============
+        // =============================================
+        async function addTestimonialItem() {
+            const text = prompt('النص:', 'نص الشهادة...'); if (!text) return;
+            const author = prompt('الاسم:', 'الاسم'); if (!author) return;
+            const role = prompt('الدور:', 'الدور'); if (!role) return;
+            siteData.testimonials.push({ text, author, role });
+            renderTestimonials(); renderAdminContent('sec-testimonials'); await syncAllToSupabase();
+        }
+        async function editTestimonialItem(i) {
+            const t = siteData.testimonials[i];
+            const text = prompt('النص:', t.text); if (text === null) return;
+            const author = prompt('الاسم:', t.author); if (author === null) return;
+            const role = prompt('الدور:', t.role); if (role === null) return;
+            siteData.testimonials[i] = { text, author, role };
+            renderTestimonials(); renderAdminContent('sec-testimonials'); await syncAllToSupabase();
+        }
+        async function deleteTestimonialItem(i) {
+            if (confirm('حذف هذه الشهادة؟')) {
+                siteData.testimonials.splice(i, 1);
+                renderTestimonials(); renderAdminContent('sec-testimonials'); await syncAllToSupabase();
+            }
+        }
+
+        // =============================================
+        // ============ CRUD الأسئلة ============
+        // =============================================
+        async function addFaqItem() {
+            const question = prompt('السؤال:', 'سؤال جديد؟'); if (!question) return;
+            const answer = prompt('الإجابة:', 'الإجابة...'); if (!answer) return;
+            siteData.faq.push({ question, answer });
+            renderFAQ(); renderAdminContent('sec-faq'); await syncAllToSupabase();
+        }
+        async function editFaqItem(i) {
+            const f = siteData.faq[i];
+            const question = prompt('السؤال:', f.question); if (question === null) return;
+            const answer = prompt('الإجابة:', f.answer); if (answer === null) return;
+            siteData.faq[i] = { question, answer };
+            renderFAQ(); renderAdminContent('sec-faq'); await syncAllToSupabase();
+        }
+        async function deleteFaqItem(i) {
+            if (confirm('حذف هذا السؤال؟')) {
+                siteData.faq.splice(i, 1);
+                renderFAQ(); renderAdminContent('sec-faq'); await syncAllToSupabase();
+            }
+        }
+
+        // =============================================
+        // ============ دوال عامة ============
+        // =============================================
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+        function toggleFaq(el) {
+            const isActive = el.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+            if (!isActive) el.classList.add('active');
+        }
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            alert('شكراً لتواصلك! سنرد عليك قريباً.');
+            event.target.reset();
+        }
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+        });
+        document.getElementById('adminOverlay').addEventListener('click', function(e) {
+            if (e.target === this && !isLoggedIn) closeAdmin();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openAdminLogin(); }
+            if (e.key === 'Escape' && document.getElementById('adminOverlay').style.display === 'flex') {
+                if (isLoggedIn && confirm('هل تريد الخروج من لوحة التحكم؟')) closeAdmin();
+                else if (!isLoggedIn) closeAdmin();
+            }
+        });
+
+        // =============================================
+        // ============ تهيئة الموقع ============
+        // =============================================
+        async function initSite() {
+            updateWebsiteUI(); // عرض سريع للبيانات الافتراضية
+            await loadFromSupabase(); // ثم تحديث من قاعدة البيانات
+        }
+        initSite();
+
+        console.log('🚀 الموقع جاهز ومتصل بـ Supabase');
+    </script>
+</body>
+</html>
